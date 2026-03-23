@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lost & Found AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top, #0f172a, #020617);
+            color: white;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 50px;
+            background: linear-gradient(90deg, #22c55e, #38bdf8);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+        }
+
+        input {
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+
+        button {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            cursor: pointer;
+        }
+
+        .preview img {
+            max-width: 200px;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .card img {
+            width: 120px;
+            border-radius: 10px;
+        }
+
+        .details {
+            text-align: left;
+        }
+
+        .score {
+            color: #22c55e;
+        }
+
+        .best {
+            border: 2px solid gold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔍 Lost & Found AI</h1>
+
+    <div class="glass">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="query" placeholder="Describe item...">
+            <input type="file" name="image" onchange="previewImage(event)">
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="preview" id="preview"></div>
+    </div>
+
+    <div class="results">
+        {% for r in results %}
+        <div class="card {% if loop.index == 1 %}best{% endif %}">
+            
+            <!-- 🔥 FINAL FIX -->
+            <img src="/images/{{ r.image.split('/')[-1] }}">
+
+            <div class="details">
+                <h3>{{ r.item }}</h3>
+                <p class="score">Confidence: {{ "%.2f"|format(r.score) }}</p>
+                <p>{{ r.explanation }}</p>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+function previewImage(event) {
+    const preview = document.getElementById('preview');
+    preview.innerHTML = "";
+    const file = event.target.files[0];
+
+    if (file) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        preview.appendChild(img);
+    }
+}
+</script>
+
+</body>
+</html>
